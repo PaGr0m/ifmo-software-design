@@ -10,13 +10,13 @@ public class Shell {
         String input;
         String output;
 
+        System.out.print("SHELL >> ");
         while (scanner.hasNextLine()) {
-            System.out.print("SHELL >> ");
-
             input = scanner.nextLine();
             output = executor.execute(input);
 
             System.out.println(output);
+            System.out.print("SHELL >> ");
         }
     }
 }

@@ -16,15 +16,15 @@ public class SubstitutorTest {
     public void testSubstitution() {
         // Arrange
         String input = "Hello World \"    Software  Design\"  $bash 'hi' ";
-        Lexem lexem1 = Lexem.builder().word("Hello").type(LexemType.WORD).build();
-        Lexem lexem2 = Lexem.builder().word("World").type(LexemType.WORD).build();
-        Lexem lexem3 = Lexem.builder().word("\"    Software  Design\"").type(LexemType.WORD_IN_DOUBLE_QUOTE).build();
-        Lexem lexem4 = Lexem.builder().word("$bash").type(LexemType.WORD_VARIABLE).build();
-        Lexem lexem5 = Lexem.builder().word("'hi'").type(LexemType.WORD_IN_SINGLE_QUOTE).build();
-        Lexem lexem6 = Lexem.builder().word("value").type(LexemType.WORD_VARIABLE).build();
+        Lexeme lexeme1 = Lexeme.builder().word("Hello").type(LexemType.WORD).build();
+        Lexeme lexeme2 = Lexeme.builder().word("World").type(LexemType.WORD).build();
+        Lexeme lexeme3 = Lexeme.builder().word("\"    Software  Design\"").type(LexemType.WORD_IN_DOUBLE_QUOTE).build();
+        Lexeme lexeme4 = Lexeme.builder().word("$bash").type(LexemType.WORD_VARIABLE).build();
+        Lexeme lexeme5 = Lexeme.builder().word("'hi'").type(LexemType.WORD_IN_SINGLE_QUOTE).build();
+        Lexeme lexeme6 = Lexeme.builder().word("value").type(LexemType.WORD_VARIABLE).build();
 
-        List<Lexem> actual = Arrays.asList(lexem1, lexem2, lexem3, lexem4, lexem5);
-        List<Lexem> expected = Arrays.asList(lexem1, lexem2, lexem3, lexem6, lexem5);
+        List<Lexeme> actual = Arrays.asList(lexeme1, lexeme2, lexeme3, lexeme4, lexeme5);
+        List<Lexeme> expected = Arrays.asList(lexeme1, lexeme2, lexeme3, lexeme6, lexeme5);
 
         environment.putVariable("bash", "value");
 
