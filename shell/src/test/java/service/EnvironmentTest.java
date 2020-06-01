@@ -4,20 +4,9 @@ import commands.impl.CommandExit;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class EnvironmentTest {
-    private final Environment environment = Environment.getInstance();
-
-    @Test
-    public void testGetInstance() {
-        // Arrange
-        Environment env1 = Environment.getInstance();
-        Environment env2 = Environment.getInstance();
-
-        // Assert
-        assertEquals(env1, env2);
-    }
+    private final Environment environment = new Environment();
 
     @Test
     public void testGetCommand() {

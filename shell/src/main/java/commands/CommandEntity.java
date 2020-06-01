@@ -8,7 +8,6 @@ import java.util.List;
 @Data
 @Builder
 public class CommandEntity {
-    private String name;
-    //    private String arguments;
+    private Command command;
     private List<String> arguments;
 }

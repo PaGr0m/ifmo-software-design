@@ -1,40 +1,36 @@
 package commands.impl;
 
 import commands.Command;
+import commands.CommandException;
+import org.jetbrains.annotations.NotNull;
 import service.Environment;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Команда соответствующая bash cat
+ */
 public class CommandCat implements Command {
-    private String name = "";
 
+    /**
+     * Запуск команды
+     *
+     * @param arguments аргументы для команды
+     * @return возвращаемое значение команды
+     */
     @Override
-    public String name() {
-        return "cat";
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String run(List<String> arguments) {
-        String args = String.join(" ", arguments);
-        StringBuilder contentBuilder = new StringBuilder();
-
-        try (Stream<String> stream = Files.lines(
-                Paths.get(Environment.getCurrentPath(), args.trim()))) {
-            stream.forEach(s -> contentBuilder.append(s).append("\n"));
+    public String run(@NotNull List<String> arguments) {
+        Path path = Paths.get(Environment.getCurrentPath(), joinArguments(arguments));
+        try (Stream<String> stream = Files.lines(path)) {
+            return stream.collect(Collectors.joining("\n"));
         } catch (IOException e) {
-            e.getMessage();
-            contentBuilder.append("File is not exist!");
+            throw new CommandException("File is not exist!");
         }
-
-        return contentBuilder.toString();
     }
 }

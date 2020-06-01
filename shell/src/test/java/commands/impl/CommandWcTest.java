@@ -9,7 +9,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class CommandWcTest {
-
     private final Command command = new CommandWc();
     private final String pathToTestResources = "src/test/";
 
@@ -43,7 +42,7 @@ public class CommandWcTest {
         String actual = command.run(Collections.singletonList("hello world"));
 
         // Assert
-        assertThat(actual).isEqualTo("1 2 10\n");
+        assertThat(actual).isEqualTo("1 2 10 \n");
     }
 
     @Test

@@ -4,19 +4,17 @@ import commands.Command;
 
 import java.util.List;
 
+/**
+ * Команда соответствующая bash exit
+ */
 public class CommandExit implements Command {
-    private String name;
 
-    @Override
-    public String name() {
-        return "exit";
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    /**
+     * Запуск команды
+     *
+     * @param arguments аргументы для команды
+     * @return возвращаемое значение команды
+     */
     @Override
     public String run(List<String> arguments) {
         System.exit(0);

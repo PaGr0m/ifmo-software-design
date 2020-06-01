@@ -12,89 +12,109 @@ public class ParserTest {
     private final Parser parser = new Parser();
 
     @Test
-    public void testParseLexemWithWordInDoubleQuote() {
+    public void testParseLexemeWithWordInDoubleQuote() {
         // Arrange
         String input = "\"   hello   world   \"";
-        List<Lexem> excpected = Collections.singletonList(
-                Lexem.builder()
-                     .word(input)
-                     .type(LexemType.WORD_IN_DOUBLE_QUOTE)
-                     .build());
+        List<Lexeme> expected = Collections.singletonList(
+                Lexeme.builder()
+                      .word(input)
+                      .type(LexemeType.WORD_IN_DOUBLE_QUOTE)
+                      .build());
 
         // Act
-        List<Lexem> actual = parser.parseLexem(input);
+        List<Lexeme> actual = parser.parse(input);
 
         // Assert
-        assertThat(actual).isEqualTo(excpected);
+        assertThat(actual).isEqualTo(expected);
     }
 
-
     @Test
-    public void testParseLexemWithWordInSingleQuote() {
+    public void testParseLexemeWithWordInSingleQuote() {
         // Arrange
         String input = "'  hello   world  '";
-        List<Lexem> excpected = Collections.singletonList(
-                Lexem.builder()
-                     .word(input)
-                     .type(LexemType.WORD_IN_SINGLE_QUOTE)
-                     .build());
+        List<Lexeme> expected = Collections.singletonList(
+                Lexeme.builder()
+                      .word(input)
+                      .type(LexemeType.WORD_IN_SINGLE_QUOTE)
+                      .build());
 
         // Act
-        List<Lexem> actual = parser.parseLexem(input);
+        List<Lexeme> actual = parser.parse(input);
 
         // Assert
-        assertThat(actual).isEqualTo(excpected);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    public void testParseLexemWithWordVariable() {
+    public void testParseLexemeWithWordVariable() {
         // Arrange
         String input = "$task";
-        List<Lexem> excpected = Collections.singletonList(
-                Lexem.builder()
-                     .word(input)
-                     .type(LexemType.WORD_VARIABLE)
-                     .build());
+        List<Lexeme> expected = Collections.singletonList(
+                Lexeme.builder()
+                      .word(input)
+                      .type(LexemeType.WORD_VARIABLE)
+                      .build());
 
         // Act
-        List<Lexem> actual = parser.parseLexem(input);
+        List<Lexeme> actual = parser.parse(input);
 
         // Assert
-        assertThat(actual).isEqualTo(excpected);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    public void testParseLexemWithWordAssigment() {
+    public void testParseLexemeWithWordAssigment() {
         // Arrange
         String input = "y=10";
-        List<Lexem> excpected = Collections.singletonList(
-                Lexem.builder()
-                     .word(input)
-                     .type(LexemType.WORD_ASSIGMENT)
-                     .build());
+        List<Lexeme> expected = Collections.singletonList(
+                Lexeme.builder()
+                      .word(input)
+                      .type(LexemeType.WORD_ASSIGMENT)
+                      .build());
 
         // Act
-        List<Lexem> actual = parser.parseLexem(input);
+        List<Lexeme> actual = parser.parse(input);
 
         // Assert
-        assertThat(actual).isEqualTo(excpected);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    public void testParseLexem() {
+    public void testParseLexeme() {
         // Arrange
         String input = "Hello World \"    Software  Design\"  $bash 'hi' ";
-        Lexem lexem1 = Lexem.builder().word("Hello").type(LexemType.WORD).build();
-        Lexem lexem2 = Lexem.builder().word("World").type(LexemType.WORD).build();
-        Lexem lexem3 = Lexem.builder().word("\"    Software  Design\"").type(LexemType.WORD_IN_DOUBLE_QUOTE).build();
-        Lexem lexem4 = Lexem.builder().word("$bash").type(LexemType.WORD_VARIABLE).build();
-        Lexem lexem5 = Lexem.builder().word("'hi'").type(LexemType.WORD_IN_SINGLE_QUOTE).build();
-        List<Lexem> excpected = Arrays.asList(lexem1, lexem2, lexem3, lexem4, lexem5);
+        Lexeme lexeme1 = Lexeme.builder().word("Hello").type(LexemeType.WORD).build();
+        Lexeme lexeme2 = Lexeme.builder().word(" ").type(LexemeType.SPACE).build();
+        Lexeme lexeme3 = Lexeme.builder().word("World").type(LexemeType.WORD).build();
+        Lexeme lexeme4 = Lexeme.builder().word(" ").type(LexemeType.SPACE).build();
+        Lexeme lexeme5 = Lexeme.builder().word("\"    Software  Design\"").type(LexemeType.WORD_IN_DOUBLE_QUOTE).build();
+        Lexeme lexeme6 = Lexeme.builder().word(" ").type(LexemeType.SPACE).build();
+        Lexeme lexeme7 = Lexeme.builder().word("$bash").type(LexemeType.WORD_VARIABLE).build();
+        Lexeme lexeme8 = Lexeme.builder().word(" ").type(LexemeType.SPACE).build();
+        Lexeme lexeme9 = Lexeme.builder().word("'hi'").type(LexemeType.WORD_IN_SINGLE_QUOTE).build();
+        Lexeme lexeme10 = Lexeme.builder().word(" ").type(LexemeType.SPACE).build();
+        List<Lexeme> expected = Arrays.asList(lexeme1, lexeme2, lexeme3, lexeme4, lexeme5,
+                                              lexeme6, lexeme7, lexeme8, lexeme9, lexeme10);
 
         // Act
-        List<Lexem> actual = parser.parseLexem(input);
+        List<Lexeme> actual = parser.parse(input);
 
         // Assert
-        assertThat(actual).isEqualTo(excpected);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void testParseLexeme2() {
+        // Arrange
+        String input = "$x$y";
+        Lexeme lexeme1 = Lexeme.builder().word("$x").type(LexemeType.WORD_VARIABLE).build();
+        Lexeme lexeme2 = Lexeme.builder().word("$y").type(LexemeType.WORD_VARIABLE).build();
+        List<Lexeme> expected = Arrays.asList(lexeme1, lexeme2);
+
+        // Act
+        List<Lexeme> actual = parser.parse(input);
+
+        // Assert
+        assertThat(actual).isEqualTo(expected);
     }
 }

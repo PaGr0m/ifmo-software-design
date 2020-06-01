@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ExecutorTest {
     private final Executor executor = new Executor();
-    private final Environment environment = Environment.getInstance();
+    private final Environment environment = new Environment();
 
     @Test
     public void testExecuteSingleCommand() {
@@ -32,19 +32,5 @@ public class ExecutorTest {
 
         // Assert
         assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
-    public void testExecuteAssigment() {
-        // Arrange
-        String input = "x=2";
-        String expected = "x = 2";
-
-        // Act
-        String actual = executor.execute(input);
-
-        // Assert
-        assertThat(actual).isEqualTo(expected);
-        assertThat(environment.getVariable("x")).isEqualTo("2");
     }
 }

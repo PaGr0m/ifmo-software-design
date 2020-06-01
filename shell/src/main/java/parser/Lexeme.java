@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Lexem {
+public class Lexeme {
     String word;
-    LexemType type;
+    LexemeType type;
 }
