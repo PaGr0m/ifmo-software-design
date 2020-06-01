@@ -10,17 +10,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class CommandCat implements Command {
-    private String name = "";
-
-    @Override
-    public String name() {
-        return "cat";
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
 
     @Override
     public String run(List<String> arguments) {

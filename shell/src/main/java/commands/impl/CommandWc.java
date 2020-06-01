@@ -7,17 +7,6 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class CommandWc implements Command {
-    private String name = "";
-
-    @Override
-    public String name() {
-        return "wc";
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
 
     @Override
     public String run(List<String> arguments) {

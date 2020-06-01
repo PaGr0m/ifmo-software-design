@@ -4,29 +4,89 @@ import org.junit.Test;
 import service.Environment;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SubstitutorTest {
-    private final Substitutor substitutor = new Substitutor();
-    private final Environment environment = Environment.getInstance();
+    private final Environment environment = new Environment();
+    private final Substitutor substitutor = new Substitutor(environment);
 
     @Test
     public void testSubstitution() {
         // Arrange
-        String input = "Hello World \"    Software  Design\"  $bash 'hi' ";
-        Lexeme lexeme1 = Lexeme.builder().word("Hello").type(LexemType.WORD).build();
-        Lexeme lexeme2 = Lexeme.builder().word("World").type(LexemType.WORD).build();
-        Lexeme lexeme3 = Lexeme.builder().word("\"    Software  Design\"").type(LexemType.WORD_IN_DOUBLE_QUOTE).build();
-        Lexeme lexeme4 = Lexeme.builder().word("$bash").type(LexemType.WORD_VARIABLE).build();
-        Lexeme lexeme5 = Lexeme.builder().word("'hi'").type(LexemType.WORD_IN_SINGLE_QUOTE).build();
-        Lexeme lexeme6 = Lexeme.builder().word("value").type(LexemType.WORD_VARIABLE).build();
-
-        List<Lexeme> actual = Arrays.asList(lexeme1, lexeme2, lexeme3, lexeme4, lexeme5);
-        List<Lexeme> expected = Arrays.asList(lexeme1, lexeme2, lexeme3, lexeme6, lexeme5);
+        Lexeme lexemeIn = Lexeme.builder().word("$bash").type(LexemType.WORD_VARIABLE).build();
+        Lexeme lexemeOut = Lexeme.builder().word("value").type(LexemType.WORD).build();
 
         environment.putVariable("bash", "value");
+
+        List<Lexeme> actual = Collections.singletonList(lexemeIn);
+        List<Lexeme> expected = Collections.singletonList(lexemeOut);
+
+        // Act
+        substitutor.substitution(actual);
+
+        // Assert
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void testSubstitution2() {
+        // Arrange
+        Lexeme lexemeIn1 = Lexeme.builder().word("$x").type(LexemType.WORD_VARIABLE).build();
+        Lexeme lexemeIn2 = Lexeme.builder().word("$y").type(LexemType.WORD_VARIABLE).build();
+
+        environment.putVariable("x", "ex");
+        environment.putVariable("y", "it");
+
+        Lexeme lexemeOut1 = Lexeme.builder().word("ex").type(LexemType.WORD).build();
+        Lexeme lexemeOut2 = Lexeme.builder().word("it").type(LexemType.WORD).build();
+
+        List<Lexeme> actual = Arrays.asList(lexemeIn1, lexemeIn2);
+        List<Lexeme> expected = Arrays.asList(lexemeOut1, lexemeOut2);
+
+        // Act
+        substitutor.substitution(actual);
+
+        // Assert
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void testSubstitution3() {
+        // Arrange
+        Lexeme lexemeIn1 = Lexeme.builder().word("$x").type(LexemType.WORD_VARIABLE).build();
+        Lexeme lexemeIn2 = Lexeme.builder().word("x").type(LexemType.WORD).build();
+        Lexeme lexemeIn3 = Lexeme.builder().word("$y").type(LexemType.WORD_VARIABLE).build();
+
+        environment.putVariable("x", "e");
+        environment.putVariable("y", "it");
+
+        Lexeme lexemeOut1 = Lexeme.builder().word("e").type(LexemType.WORD).build();
+        Lexeme lexemeOut2 = Lexeme.builder().word("x").type(LexemType.WORD).build();
+        Lexeme lexemeOut3 = Lexeme.builder().word("it").type(LexemType.WORD).build();
+
+        List<Lexeme> actual = Arrays.asList(lexemeIn1, lexemeIn2, lexemeIn3);
+        List<Lexeme> expected = Arrays.asList(lexemeOut1, lexemeOut2, lexemeOut3);
+
+        // Act
+        substitutor.substitution(actual);
+
+        // Assert
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    public void testSubstitution4() {
+        // Arrange
+        Lexeme lexemeIn1 = Lexeme.builder().word("\"$x\"").type(LexemType.WORD_IN_DOUBLE_QUOTE).build();
+        Lexeme lexemeOut1 = Lexeme.builder().word("\"42\"").type(LexemType.WORD).build();
+
+        environment.putVariable("x", "42");
+
+        List<Lexeme> actual = Collections.singletonList(lexemeIn1);
+        List<Lexeme> expected = Collections.singletonList(lexemeOut1);
 
         // Act
         substitutor.substitution(actual);

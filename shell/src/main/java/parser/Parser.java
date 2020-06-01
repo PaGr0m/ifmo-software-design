@@ -22,14 +22,18 @@ public class Parser {
             switch (input.charAt(position)) {
                 case ParserSymbols.DOUBLE_QUOTE: {
                     lexemes.add(parseWordInQuote(input, ParserSymbols.DOUBLE_QUOTE));
+                    skipSpaces(input).ifPresent(lexemes::add);
                     break;
                 }
                 case ParserSymbols.SINGLE_QUOTE: {
                     lexemes.add(parseWordInQuote(input, ParserSymbols.SINGLE_QUOTE));
+                    skipSpaces(input).ifPresent(lexemes::add);
+
                     break;
                 }
                 case ParserSymbols.SUBSTITUTE: {
                     lexemes.add(parseSubstitute(input));
+                    skipSpaces(input).ifPresent(lexemes::add);
                     break;
                 }
                 case ParserSymbols.ASSIGNMENT: {
@@ -38,6 +42,7 @@ public class Parser {
                 }
                 case ParserSymbols.SPACE: {
                     parseWord(input).ifPresent(lexemes::add);
+                    skipSpaces(input).ifPresent(lexemes::add);
                     break;
                 }
                 default: {
@@ -49,14 +54,25 @@ public class Parser {
         }
 
         parseWord(input).ifPresent(lexemes::add);
+        position = 0;
 
         return lexemes;
     }
 
-    private void skipSpaces(@NotNull String input) {
+    private @NotNull Optional<Lexeme> skipSpaces(@NotNull String input) {
+        Lexeme lexeme = null;
+        if (position < input.length() && input.charAt(position) == ParserSymbols.SPACE) {
+            lexeme = Lexeme.builder()
+                           .word(" ")
+                           .type(LexemType.SPACE)
+                           .build();
+        }
+
         while (position < input.length() && input.charAt(position) == ParserSymbols.SPACE) {
             position++;
         }
+
+        return Optional.ofNullable(lexeme);
     }
 
     private @NotNull Lexeme parseWordInQuote(@NotNull String input, char quoteType) {
@@ -70,7 +86,7 @@ public class Parser {
         position++;
         wordInQuote.append(quoteType);
 
-        skipSpaces(input);
+//        skipSpaces(input);
         return Lexeme.builder()
                      .word(wordInQuote.toString())
                      .type(quoteType == ParserSymbols.DOUBLE_QUOTE ? LexemType.WORD_IN_DOUBLE_QUOTE
@@ -80,13 +96,16 @@ public class Parser {
 
     private @NotNull Lexeme parseSubstitute(@NotNull String input) {
         StringBuilder variable = new StringBuilder();
-        while (position < input.length() && input.charAt(position) != ParserSymbols.SPACE) {
+        variable.append(ParserSymbols.SUBSTITUTE);
+        position++;
+        while (position < input.length() &&
+               input.charAt(position) != ParserSymbols.SPACE &&
+               input.charAt(position) != ParserSymbols.SUBSTITUTE) {
             variable.append(input.charAt(position));
             position++;
         }
-        position++;
 
-        skipSpaces(input);
+//        skipSpaces(input);
         return Lexeme.builder()
                      .word(variable.toString())
                      .type(LexemType.WORD_VARIABLE)
@@ -116,7 +135,7 @@ public class Parser {
                            .build();
             word = new StringBuilder();
         }
-        skipSpaces(input);
+//        skipSpaces(input);
 
         return Optional.ofNullable(lexeme);
     }

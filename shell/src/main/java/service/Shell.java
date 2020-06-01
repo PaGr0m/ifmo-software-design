@@ -2,9 +2,10 @@ package service;
 
 import java.util.Scanner;
 
+// TODO: exception
 public class Shell {
-    static Scanner scanner = new Scanner(System.in);
-    static Executor executor = new Executor();
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final Executor executor = new Executor();
 
     public static void run() {
         String input;

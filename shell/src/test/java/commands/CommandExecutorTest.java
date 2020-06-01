@@ -1,5 +1,6 @@
 package commands;
 
+import commands.impl.CommandEcho;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -14,7 +15,8 @@ public class CommandExecutorTest {
     public void testExecuteCommandEcho() {
         // Arrange
         CommandEntity commandEntity =
-                CommandEntity.builder().name("echo")
+                CommandEntity.builder()
+                             .command(new CommandEcho())
                              .arguments(Collections.singletonList("hello world"))
                              .build();
 

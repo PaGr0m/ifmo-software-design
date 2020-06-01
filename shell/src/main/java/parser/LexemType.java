@@ -6,4 +6,6 @@ public enum LexemType {
     WORD_ASSIGMENT,
     WORD_VARIABLE,
     WORD,
+    SPACE,
+    ;
 }

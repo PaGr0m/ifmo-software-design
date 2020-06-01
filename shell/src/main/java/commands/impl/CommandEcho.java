@@ -1,24 +1,14 @@
 package commands.impl;
 
 import commands.Command;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class CommandEcho implements Command {
-    private String name = "";
 
     @Override
-    public String name() {
-        return "echo";
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String run(List<String> arguments) {
+    public String run(@NotNull List<String> arguments) {
         StringBuilder result = new StringBuilder();
 
         for (String word : arguments) {

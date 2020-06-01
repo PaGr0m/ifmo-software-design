@@ -1,22 +1,24 @@
 package service;
 
 import commands.Command;
+import commands.CommandConstants;
 import commands.impl.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: убрать Singleton. Добавить дефолтный
 public class Environment {
-    private static String currentPath = System.getProperty("user.dir");
-    private static Map<String, Command> commands = new HashMap<>();
-    private static Map<String, String> variables = new HashMap<>();
+    private static final String currentPath = System.getProperty("user.dir");
+    private static final Map<String, Command> commands = new HashMap<>();
+    private static final Map<String, String> variables = new HashMap<>();
 
     static {
-        commands.put("echo", new CommandEcho());
-        commands.put("exit", new CommandExit());
-        commands.put("cat", new CommandCat());
-        commands.put("pwd", new CommandPwd());
-        commands.put("wc", new CommandWc());
+        commands.put(CommandConstants.COMMAND_ECHO, new CommandEcho());
+        commands.put(CommandConstants.COMMAND_EXIT, new CommandExit());
+        commands.put(CommandConstants.COMMAND_CAT, new CommandCat());
+        commands.put(CommandConstants.COMMAND_PWD, new CommandPwd());
+        commands.put(CommandConstants.COMMAND_WC, new CommandWc());
     }
 
     static {
