@@ -1,5 +1,8 @@
 package parser;
 
+/**
+ * Символы используемые в парсинге
+ */
 public class ParserSymbols {
     private ParserSymbols() {}
 

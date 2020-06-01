@@ -8,7 +8,6 @@ import java.util.Collections;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommandCatTest {
-
     private final Command commandCat = new CommandCat();
     private final String pathToTestResources = "src/test/";
 
@@ -21,7 +20,7 @@ public class CommandCatTest {
         String actual = commandCat.run(Collections.singletonList(pathToTestResources + pathToFile));
 
         // Assert
-        assertThat(actual).isEqualTo("Hello, World!\n");
+        assertThat(actual).isEqualTo("Hello, World!");
     }
 
     @Test

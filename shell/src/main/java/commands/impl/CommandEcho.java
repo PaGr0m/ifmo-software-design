@@ -4,21 +4,31 @@ import commands.Command;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * Команда соответствующая bash echo
+ */
 public class CommandEcho implements Command {
 
+    /**
+     * Запуск команды
+     *
+     * @param arguments аргументы для команды
+     * @return возвращаемое значение команды
+     */
     @Override
     public String run(@NotNull List<String> arguments) {
-        StringBuilder result = new StringBuilder();
-
-        for (String word : arguments) {
-            if ((word.startsWith("\"") && word.endsWith("\"")) ||
-                (word.startsWith("'") && word.endsWith("'"))) {
-                word = word.substring(1, word.length() - 1);
-            }
-            result.append(word).append(" ");
-        }
-
-        return result.deleteCharAt(result.length() - 1).toString();
+        return arguments.stream()
+                        .map(String::trim)
+                        .filter(str -> !str.equals(""))
+                        .map(arg -> {
+                            if ((arg.startsWith("\"") && arg.endsWith("\"")) ||
+                                (arg.startsWith("'") && arg.endsWith("'"))) {
+                                arg = arg.substring(1, arg.length() - 1);
+                            }
+                            return arg;
+                        })
+                        .collect(Collectors.joining(" "));
     }
 }

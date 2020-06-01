@@ -7,5 +7,5 @@ import lombok.Data;
 @Builder
 public class Lexeme {
     String word;
-    LexemType type;
+    LexemeType type;
 }

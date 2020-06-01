@@ -3,21 +3,31 @@ package service;
 import commands.CommandEntity;
 import commands.CommandExecutor;
 import org.jetbrains.annotations.NotNull;
-import parser.LexemType;
 import parser.Lexeme;
+import parser.LexemeType;
 import parser.Parser;
 import parser.Substitutor;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+/**
+ * Класс, который выполняет операции из командной строки
+ */
 public class Executor {
     private final Parser parser = new Parser();
     private final Environment environment = new Environment();
     private final Substitutor substitutor = new Substitutor(environment);
     private final CommandExecutor commandExecutor = new CommandExecutor();
 
+    /**
+     * Запуск команды из консоли
+     *
+     * @param input входящая строка
+     * @return результат выполнения команды
+     */
     public String execute(@NotNull String input) {
         if (input.contains("|")) {
             return executePipesCommand(createCommandList(input));
@@ -26,14 +36,19 @@ public class Executor {
         List<Lexeme> lexemes = parser.parse(input);
         substitutor.substitution(lexemes);
 
-        if (lexemes.stream().anyMatch(lexeme -> lexeme.getType() == LexemType.WORD_ASSIGMENT)) {
-            assigmentList(lexemes);
-            return "";
+        if (lexemes.stream().anyMatch(lexeme -> lexeme.getType() == LexemeType.WORD_ASSIGMENT)) {
+            return assigmentList(lexemes);
         }
 
         return commandExecutor.execute(createCommand(lexemes));
     }
 
+    /**
+     * Создание списка команд из пайпов (|)
+     *
+     * @param input входящая строка
+     * @return список разделенных команд
+     */
     private @NotNull List<CommandEntity> createCommandList(@NotNull String input) {
         List<CommandEntity> commandsList = new ArrayList<>();
 
@@ -47,25 +62,37 @@ public class Executor {
         return commandsList;
     }
 
-    private void assigmentList(@NotNull List<Lexeme> lexemes) {
-        lexemes.stream()
-               .filter(lexeme -> lexeme.getType() == LexemType.WORD_ASSIGMENT)
-               .forEach(lexeme -> {
-                   String[] attrAndValue = lexeme.getWord().split("=");
-                   environment.putVariable(attrAndValue[0], attrAndValue[1]);
-               });
+    /**
+     * Поиск всех присваивающих лексем и добавление в окружение
+     *
+     * @param lexemes список лексем
+     * @return строковое представление списка присваиваний
+     */
+    private String assigmentList(@NotNull List<Lexeme> lexemes) {
+        return lexemes.stream()
+                      .filter(lexeme -> lexeme.getType() == LexemeType.WORD_ASSIGMENT)
+                      .map(lexeme -> lexeme.getWord().split("="))
+                      .peek(varAndValue -> environment.putVariable(varAndValue[0], varAndValue[1]))
+                      .map(varAndValue -> varAndValue[0] + " = " + varAndValue[1])
+                      .collect(Collectors.joining("\n"));
     }
 
+    /**
+     * Создание сущности команды
+     *
+     * @param lexemes список лексем
+     * @return сущность команды
+     */
     private CommandEntity createCommand(@NotNull List<Lexeme> lexemes) {
         boolean flag = true;
         StringBuilder stringBuilder = new StringBuilder();
         List<String> args = new ArrayList<>();
         for (Lexeme lexeme : lexemes) {
-            if (lexeme.getType() == LexemType.SPACE) {
+            if (lexeme.getType() == LexemeType.SPACE) {
                 flag = false;
             }
 
-            if (lexeme.getType() != LexemType.SPACE && flag) {
+            if (lexeme.getType() != LexemeType.SPACE && flag) {
                 stringBuilder.append(lexeme.getWord());
             } else {
                 args.add(lexeme.getWord());
@@ -78,6 +105,13 @@ public class Executor {
                             .build();
     }
 
+    /**
+     * Поочередное выполнение команд и пайпа (|)
+     * Результат выполнения первой команды передается как аргументы для второй и так далее
+     *
+     * @param commandsList список команд
+     * @return результат выполнения всех команд
+     */
     private String executePipesCommand(@NotNull List<CommandEntity> commandsList) {
         String output = commandExecutor.execute(commandsList.get(0));
 
