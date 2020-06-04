@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,7 +27,17 @@ public class CommandCat implements Command {
      */
     @Override
     public String run(@NotNull List<String> arguments) {
-        Path path = Paths.get(Environment.getCurrentPath(), joinArguments(arguments));
+        String args = joinArguments(arguments);
+
+        Path path;
+        if (Paths.get(Environment.getCurrentPath(), args).toFile().exists()) {
+            path = Paths.get(Environment.getCurrentPath(), args);
+        } else if (Paths.get(args).toFile().exists()) {
+            path = Paths.get(args);
+        } else {
+            return args;
+        }
+
         try (Stream<String> stream = Files.lines(path)) {
             return stream.collect(Collectors.joining("\n"));
         } catch (IOException e) {
