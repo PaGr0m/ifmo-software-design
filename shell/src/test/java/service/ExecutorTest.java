@@ -25,7 +25,7 @@ public class ExecutorTest {
     public void testExecuteCommands() {
         // Arrange
         String input = "echo hello world | wc";
-        String expected = "1 2 10\n";
+        String expected = "1 2 10 ";
 
         // Act
         String actual = executor.execute(input);

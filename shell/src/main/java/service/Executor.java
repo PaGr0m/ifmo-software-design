@@ -117,7 +117,7 @@ public class Executor {
 
         commandsList.remove(0);
         for (CommandEntity command : commandsList) {
-            command.setArguments(Collections.singletonList(output));
+            command.getArguments().addAll(Collections.singletonList(output));
             output = commandExecutor.execute(command);
         }
 

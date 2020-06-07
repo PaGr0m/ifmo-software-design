@@ -21,6 +21,7 @@ public class Environment {
     static {
         commands.put(CommandConstants.COMMAND_ECHO, new CommandEcho());
         commands.put(CommandConstants.COMMAND_EXIT, new CommandExit());
+        commands.put(CommandConstants.COMMAND_GREP, new CommandGrep());
         commands.put(CommandConstants.COMMAND_CAT, new CommandCat());
         commands.put(CommandConstants.COMMAND_PWD, new CommandPwd());
         commands.put(CommandConstants.COMMAND_WC, new CommandWc());
