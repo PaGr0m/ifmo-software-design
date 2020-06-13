@@ -52,8 +52,10 @@ buildNumber.properties
 ## Gradle
 ##############################
 bin/
-build/
-.gradle
+*build/
+*gradle
+*gradlew*
+*.gradle
 .gradletasknamecache
 gradle-app.setting
 !gradle-wrapper.jar

@@ -1,22 +1,34 @@
 package commands.impl;
 
 import commands.Command;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Команда соответствующая bash echo
+ */
 public class CommandEcho implements Command {
-    private String name = "";
 
+    /**
+     * Запуск команды
+     *
+     * @param arguments аргументы для команды
+     * @return возвращаемое значение команды
+     */
     @Override
-    public String name() {
-        return "echo";
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String run(String arguments, String options) {
-        return arguments;
+    public String run(@NotNull List<String> arguments) {
+        return arguments.stream()
+                        .map(String::trim)
+                        .filter(str -> !str.equals(""))
+                        .map(arg -> {
+                            if ((arg.startsWith("\"") && arg.endsWith("\"")) ||
+                                (arg.startsWith("'") && arg.endsWith("'"))) {
+                                arg = arg.substring(1, arg.length() - 1);
+                            }
+                            return arg;
+                        })
+                        .collect(Collectors.joining(" "));
     }
 }
