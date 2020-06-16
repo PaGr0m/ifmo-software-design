@@ -3,11 +3,14 @@ package commands.impl;
 import commands.Command;
 import commands.CommandException;
 import org.apache.commons.cli.*;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -45,15 +48,21 @@ public class CommandGrep implements Command {
      */
     private String executeGrep(@NotNull CommandLine commandLine) {
         List<String> argList = commandLine.getArgList();
-        String searchWord = argList.remove(0);
+        if (argList.isEmpty()) {
+            throw new CommandException("Command without arguments");
+        }
+
+        Pattern pattern = Pattern.compile(argList.remove(0),
+                                          commandLine.hasOption("i") ? Pattern.CASE_INSENSITIVE : 0);
+
+        Predicate<CharSequence> condition = commandLine.hasOption("w") ? wordEquals(pattern)
+                                                                       : notWordEquals(pattern);
 
         int counter = 0;
         int lineCount = getCountLinesByFlag(commandLine);
 
-        boolean isAdd = false;
-        CommandCat commandCat = new CommandCat();
         List<String> result = new ArrayList<>();
-        for (String originalRow : commandCat.run(argList).split("\n")) {
+        for (String originalRow : new CommandCat().run(argList).split("\n")) {
             String row = originalRow.replaceAll("['\"]", "");
 
             if (counter != 0) {
@@ -61,28 +70,9 @@ public class CommandGrep implements Command {
                 counter--;
             }
 
-            if (commandLine.hasOption("i") && commandLine.hasOption("w")) {
-                if (conditionCaseAndWordEquals(row, searchWord)) {
-                    isAdd = true;
-                }
-            } else if (commandLine.hasOption("i")) {
-                if (conditionCase(row, searchWord)) {
-                    isAdd = true;
-                }
-            } else if (commandLine.hasOption("w")) {
-                if (conditionWordEquals(row, searchWord)) {
-                    isAdd = true;
-                }
-            } else {
-                if (conditionDefault(row, searchWord)) {
-                    isAdd = true;
-                }
-            }
-
-            if (isAdd) {
+            if (isCorrectRow(row, condition)) {
                 result.add(originalRow);
                 counter = lineCount;
-                isAdd = false;
             }
         }
 
@@ -90,51 +80,17 @@ public class CommandGrep implements Command {
     }
 
     /**
-     * Условие того, что используется флаг нечувствительности к регистру (-i)
-     * Строка и слово приводятся с нижнему регистру и проверяется вхождение слова в строку
+     * Функция, которая проверяет совпадение строки с паттерном.
      *
-     * @param row        строка
-     * @param searchWord слово, которое необходимо найти
-     * @return true - если условие выполняется, false - иначе
+     * @param row       проверяемая строка
+     * @param condition условие по которому происходит проверка
+     * @return если условие выполняется, false - иначе
      */
-    private boolean conditionCase(@NotNull String row, String searchWord) {
-        return Arrays.stream(row.toLowerCase().split(" "))
-                     .anyMatch(str -> str.toLowerCase().contains(searchWord.toLowerCase()));
-    }
-
-    /**
-     * Условие того, что используется флаг нечувствительности к регистру (-i)
-     * Строка и слово приводятся с нижнему регистру и проверяется вхождение слова в строку
-     *
-     * @param row        строка
-     * @param searchWord слово, которое необходимо найти
-     * @return true - если условие выполняется, false - иначе
-     */
-    private boolean conditionWordEquals(@NotNull String row, String searchWord) {
-        return Arrays.asList(row.split(" ")).contains(searchWord);
-    }
-
-    /**
-     * Условие того, что используется флаг поиска слова целиком (-w)
-     * В строке проверяется есть ли в ней слово, которое точное сопоставимо к искомым
-     *
-     * @param row        строка
-     * @param searchWord слово, которое необходимо найти
-     * @return true - если условие выполняется, false - иначе
-     */
-    private boolean conditionCaseAndWordEquals(@NotNull String row, @NotNull String searchWord) {
-        return Arrays.asList(row.toLowerCase().split(" ")).contains(searchWord.toLowerCase());
-    }
-
-    /**
-     * Условие того без флагов
-     *
-     * @param row        строка
-     * @param searchWord слово, которое необходимо найти
-     * @return true - если условие выполняется, false - иначе
-     */
-    private boolean conditionDefault(@NotNull String row, String searchWord) {
-        return Arrays.stream(row.split(" ")).anyMatch(str -> str.contains(searchWord));
+    private boolean isCorrectRow(@NotNull String row, @NotNull Predicate<CharSequence> condition) {
+        return Arrays.stream(row.split("\\s+"))
+                     .map(condition::test)
+                     .reduce((acc, elem) -> acc |= elem)
+                     .orElse(false);
     }
 
     /**
@@ -173,5 +129,27 @@ public class CommandGrep implements Command {
         options.addOption("A", "A", true, "print n lines after line matching");
 
         return options;
+    }
+
+    /**
+     * Предикат проверки не полного вхождения слова в строке
+     *
+     * @param pattern паттерн проверки со строкой
+     * @return если условие выполняется, false - иначе
+     */
+    @Contract(pure = true)
+    private @NotNull Predicate<CharSequence> notWordEquals(Pattern pattern) {
+        return str -> pattern.matcher(str).find();
+    }
+
+    /**
+     * Предикат проверки полного вхождения слова в строке
+     *
+     * @param pattern паттерн проверки со строкой
+     * @return если условие выполняется, false - иначе
+     */
+    @Contract(pure = true)
+    private @NotNull Predicate<CharSequence> wordEquals(Pattern pattern) {
+        return str -> pattern.matcher(str).matches();
     }
 }

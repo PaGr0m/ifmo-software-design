@@ -37,6 +37,10 @@ public class CommandCat implements Command {
             return args;
         }
 
+        if (path.toFile().isDirectory()) {
+            throw new CommandException("Wrong input");
+        }
+
         try (Stream<String> stream = Files.lines(path)) {
             return stream.collect(Collectors.joining("\n"));
         } catch (IOException e) {
