@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,6 +35,10 @@ public class CommandCat implements Command {
             path = Paths.get(args);
         } else {
             return args;
+        }
+
+        if (path.toFile().isDirectory()) {
+            throw new CommandException("Wrong input");
         }
 
         try (Stream<String> stream = Files.lines(path)) {

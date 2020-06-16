@@ -21,7 +21,7 @@ public class CommandWcTest {
         String actual = command.run(Collections.singletonList(pathToTestResources + pathToFile));
 
         // Assert
-        assertThat(actual).isEqualTo("1 2 12 src/test/resources/Example.txt\n");
+        assertThat(actual).isEqualTo("1 2 12 src/test/resources/Example.txt");
     }
 
     @Test
@@ -33,7 +33,7 @@ public class CommandWcTest {
         String actual = command.run(Collections.singletonList(pathToTestResources + pathToFile));
 
         // Assert
-        assertThat(actual).isEqualTo("0 0 0 src/test/resources/Empty.txt\n");
+        assertThat(actual).isEqualTo("0 0 0 src/test/resources/Empty.txt");
     }
 
     @Test
@@ -42,7 +42,7 @@ public class CommandWcTest {
         String actual = command.run(Collections.singletonList("hello world"));
 
         // Assert
-        assertThat(actual).isEqualTo("1 2 10 \n");
+        assertThat(actual).isEqualTo("1 2 10 ");
     }
 
     @Test

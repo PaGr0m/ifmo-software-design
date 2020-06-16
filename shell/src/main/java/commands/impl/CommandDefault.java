@@ -23,7 +23,7 @@ public class CommandDefault implements Command {
      * Запуск команды при помощи <code> Process </code>
      *
      * @param arguments аргументы для команды
-     * @return возвращаемое значение команды
+     * @return результат выполнения команды
      */
     @Override
     public String run(@NotNull List<String> arguments) {

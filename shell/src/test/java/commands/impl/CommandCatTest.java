@@ -34,16 +34,4 @@ public class CommandCatTest {
         // Assert
         assertThat(actual).isEqualTo("");
     }
-
-    @Test
-    public void testRunCommandCatWithNotExistFile() {
-        // Arrange
-        String pathToFile = "resources/NotExist.bash";
-
-        // Act
-        String actual = commandCat.run(Collections.singletonList(pathToTestResources + pathToFile));
-
-        // Assert
-        assertThat(actual).isEqualTo("File is not exist!");
-    }
 }

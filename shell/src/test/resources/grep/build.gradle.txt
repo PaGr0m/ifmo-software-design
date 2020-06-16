@@ -1,0 +1,19 @@
+apply plugin: 'java'
+apply plugin: 'JAVA'
+apply plugin: 'javac'
+apply PLUGIN: 'kotlin'
+apply plugin: 'idea'
+
+group 'org.jetbrains'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    implementation 'org.jetbrains:annotations:15.0'
+}
